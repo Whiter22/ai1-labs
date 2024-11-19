@@ -8,15 +8,17 @@ html, body {
 #main-container{
     width: 100%;
     height: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 10px;  
 }
 
-#map-holder {
+#map-holder { 
+    width: 1000px;
+    height: 100%;
     background-color: aqua;
-    padding: 10px 10px;
+    padding: 5px 5px;
 }
 
 #map{
@@ -25,16 +27,20 @@ html, body {
 }
 
 #puzzle-container {
+    width: 1000px;
+    height: 100%;
     background-color: pink;
-    padding: 10px 10px;
+    padding: 5px 5px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
 }
 
 #answear-container {
+    width: 1000px;
+    height: 100%;
     background-color: lightgreen;
-    padding: 10px 10px;
+    padding: 5px 5px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
@@ -44,7 +50,6 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 400px;
     background-color: red;
     gap: 20px;
 }
@@ -52,6 +57,5 @@ html, body {
 .puzzle{
     width: 100%;
     height: 100%;
-    background-color: blue;
-    border: solid black;
+    border: solid black 1px;
 }

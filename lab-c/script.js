@@ -67,12 +67,37 @@ function splitImg(canvas){
             piece.style.backgroundImage = `url(${canvas.toDataURL()})`;
             piece.style.backgroundPosition = `-${x * pieceWidth}px -${y * pieceHeight}px`;
             piece.draggable = true;
-            piece.dataset.index = y * 4 + x;
+            piece.dataset.index = y * cols + x;
             pieces.push(piece);
         }
     }
 
     pieces.sort(() => Math.random() - 0.5).forEach(piece => puzzleBoard.appendChild(piece));
+
+    pieces.forEach(piece => {
+        piece.addEventListener("dragstart", dragStart);
+    });
+
+    const dropArea = document.getElementById("answear-container");
+    dropArea.innerHTML = '';
+    for (let y = 0; y < rows; y++){
+        for (let x = 0; x < cols; x++){
+            const dropZone = document.createElement("div");
+            dropZone.classList.add("puzzle");
+            dropZone.dataset.index = x;
+            // dropZone.addEventListener("drop", drop);
+            dropZone.addEventListener("dragover", dragOver);
+            dropArea.appendChild(dropZone);
+        }
+    }
+}
+
+function dragStart(event) {
+    event.dataTransfer.setData("text", event.target.dataset.index);
+}
+
+function dragOver(event) {
+    event.preventDefault();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
