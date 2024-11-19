@@ -1,4 +1,3 @@
-// Request permissions for location and notifications
 function requestPermissions() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -14,27 +13,23 @@ function requestPermissions() {
     }
 }
 
-// Initialize Leaflet map
 let map;
 function initializeMap() {
     map = L.map("map").setView([51.505, -0.09], 13);
 
-    // Add OpenStreetMap tiles
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap contributors"
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri'
     }).addTo(map);
 }
 
-// Get user location and add marker on map
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
             const { latitude, longitude } = position.coords;
-            map.setView([latitude, longitude], 13);
+            map.setView([latitude, longitude], 20);
 
             L.marker([latitude, longitude]).addTo(map)
-                .bindPopup("Twoja lokalizacja")
+                .bindPopup("Twoja lokalizacja!")
                 .openPopup();
         });
     } else {
@@ -42,104 +37,49 @@ function getLocation() {
     }
 }
 
-function exportMap() {
-    const mapContainer = document.getElementById("map");
-
-    // Capture map using html2canvas
-    html2canvas(mapContainer).then(canvas => {
-        const imgData = canvas.toDataURL("image/png");
-
-        try {
-            // Store the image in localStorage
-            localStorage.setItem("capturedMap", imgData);
-            alert("Mapa została zapisana w pamięci przeglądarki!");
-
-            // Optionally, you can trigger a download as well
-            const downloadLink = document.createElement("a");
-            downloadLink.href = imgData;
-            downloadLink.download = "mapa.png";
-            downloadLink.click();
-
-        } catch (error) {
-            console.error("Failed to save map to localStorage:", error);
-            alert("Nie udało się zapisać mapy. Prawdopodobnie przekroczono limit pamięci.");
-        }
-    }).catch(error => {
-        console.error("Error capturing map:", error);
-        alert("Wystąpił problem podczas eksportowania mapy.");
+function getMap(){
+    document.querySelector('.leaflet-control-zoom').style.display = 'none';
+    leafletImage(map, function(err, canvas) {
+        document.querySelector('.leaflet-control-zoom').style.display = '';
+        const img = document.getElementById('map-holder');
+        img.src = canvas.toDataURL();
+        splitImg(canvas);
+        console.log("wszystko git")
     });
 }
 
-// Initialize drag-and-drop elements
-function initializeTable() {
-    const table = document.getElementById("table");
+function splitImg(canvas){
+    let puzzleBoard = document.getElementById("puzzle-container");
+    puzzleBoard.innerHTML = ''; // Wyczyść planszę puzzli
+    
+    const rows = 3; // Liczba wierszy
+    const cols = 4; // Liczba kolumn
+    const pieceWidth = canvas.width / cols; // Szerokość jednego puzzla
+    const pieceHeight = canvas.height / rows; // Wysokość jednego puzzla
+    const pieces = [];
 
-    for (let i = 0; i < 16; i++) {
-        const item = document.createElement("div");
-        item.className = "table-item";
-        item.draggable = true;
-        item.id = `item-${i + 1}`;
-        item.innerText = i + 1;
-
-        item.addEventListener("dragstart", dragStart);
-        item.addEventListener("dragover", dragOver);
-        item.addEventListener("drop", drop);
-        table.appendChild(item);
-    }
-}
-
-// Drag-and-drop functions
-function dragStart(event) {
-    event.dataTransfer.setData("text/plain", event.target.id);
-}
-
-function dragOver(event) {
-    event.preventDefault();
-}
-
-function drop(event) {
-    event.preventDefault();
-    const draggedId = event.dataTransfer.getData("text/plain");
-    const draggedElement = document.getElementById(draggedId);
-
-    if (draggedElement && draggedElement.parentNode === event.target) {
-        draggedElement.classList.add("correct");
-        checkCompletion();
-    }
-    event.target.appendChild(draggedElement);
-}
-
-// Check if all items are in correct positions
-function checkCompletion() {
-    const items = document.querySelectorAll(".table-item");
-    let allCorrect = true;
-
-    items.forEach((item) => {
-        if (!item.classList.contains("correct")) {
-            allCorrect = false;
+    // Twórz fragmenty mapy jako osobne elementy <canvas>
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            // Tworzenie nowego elementu canvas dla puzzla
+            const piece = document.createElement('div');
+            piece.classList.add("puzzle");
+            piece.style.backgroundImage = `url(${canvas.toDataURL()})`;
+            piece.style.backgroundPosition = `-${x * pieceWidth}px -${y * pieceHeight}px`;
+            piece.draggable = true;
+            piece.dataset.index = y * 4 + x;
+            pieces.push(piece);
         }
-    });
-
-    if (allCorrect) {
-        showCompletionNotification();
     }
+
+    pieces.sort(() => Math.random() - 0.5).forEach(piece => puzzleBoard.appendChild(piece));
 }
 
-// Show notification on completion
-function showCompletionNotification() {
-    if (Notification.permission === "granted") {
-        new Notification("Wszystkie elementy są na swoim miejscu!");
-    } else {
-        alert("Wszystkie elementy są na swoim miejscu!");
-    }
-}
-
-// Initialize the application
 document.addEventListener("DOMContentLoaded", () => {
     requestPermissions();
     initializeMap();
-    initializeTable();
 
-    document.getElementById("getLocation").addEventListener("click", getLocation);
-    document.getElementById("exportMap").addEventListener("click", exportMap);
+    document.getElementById("set-location").addEventListener("click", getLocation);
+    document.getElementById("get-map").addEventListener("click", getMap);
 });
+
