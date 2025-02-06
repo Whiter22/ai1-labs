@@ -1,0 +1,122 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #3498db;
+    --background-color: #ecf0f1;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+#weather-search-params {
+    width: 380px;
+    margin: 30px auto;
+    text-align: center;
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#weather-search-params h1 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+#locationInput {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 2px solid var(--accent-color);
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.checkButton {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#checkButton:hover {
+    background-color: var(--secondary-color);
+}
+
+#weather-results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.weather-block {
+    width: 380px;
+    height: 160px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.weather-block:hover {
+    transform: scale(1.02);
+}
+
+.weather-date {
+    font-weight: bold;
+    width: 100%;
+    text-align: left;
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 18px;
+    box-sizing: border-box;
+}
+
+.weather-icon {
+    position: absolute;
+    top: 50px;
+    left: 15px;
+    width: 100px;
+    height: 100px;
+}
+
+.weather-temperature {
+    position: absolute;
+    top: 70px;
+    left: 130px;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.weather-temperature-feels-like {
+    position: absolute;
+    top: 110px;
+    left: 130px;
+}
+
+.weather-description {
+    position: absolute;
+    top: 130px;
+    left: 130px;
+    font-style: italic;
+}
